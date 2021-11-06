@@ -77,6 +77,14 @@ const getResourceName = (url) => {
   return urlSansQuery.replace(/^https?:\/\//i, '');
 };
 
+const getMetricUnit = (metric) => {
+  if (metric.name === 'bundleSize') {
+    return 'bytes';
+  }
+
+  return metric.unit;
+};
+
 export function setupDefaultFlipperReporter() {
   let observers = [];
   const sessionStartedAt = Date.now();
@@ -92,6 +100,7 @@ export function setupDefaultFlipperReporter() {
       return IDENTIFIER;
     },
     onConnect(connection) {
+      console.log('connected');
       connection.send('setSession', {
         schemaVersion: SCHEMA_VERSION,
         sessionStartedAt,
@@ -179,7 +188,7 @@ export function setupDefaultFlipperReporter() {
               name: entry.name,
               startTime: entry.startTime,
               value: entry.value,
-              unit: entry.name === 'bundleSize' ? 'bytes' : undefined,
+              unit: getMetricUnit(entry),
             }))
           );
         },

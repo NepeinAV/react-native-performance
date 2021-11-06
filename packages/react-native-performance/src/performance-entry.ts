@@ -7,7 +7,13 @@ type MetricOptions = {
   startTime: number;
   value: string | number;
   detail?: any;
+  unit?: MetricUnit;
 };
+
+export type MetricUnit = MetricUnitBytes | MetricUnitMilliseconds;
+
+type MetricUnitBytes = 'b' | 'byte' | 'bytes';
+type MetricUnitMilliseconds = 'ms' | 'millisecond' | 'milliseconds';
 
 type MeasureOptions = {
   startTime?: number;
@@ -78,11 +84,13 @@ export class PerformanceReactNativeMark extends PerformanceEntry {
 export class PerformanceMetric extends PerformanceEntry {
   value: string | number;
   detail?: any;
+  unit?: MetricUnit;
 
   constructor(name: string, metricOptions: MetricOptions) {
     super(name, 'metric', metricOptions.startTime, 0);
     this.value = metricOptions.value;
     this.detail = metricOptions.detail;
+    this.unit = metricOptions.unit;
   }
 
   toJSON() {
@@ -93,6 +101,7 @@ export class PerformanceMetric extends PerformanceEntry {
       duration: this.duration,
       detail: this.detail,
       value: this.value,
+      unit: this.unit,
     };
   }
 }
